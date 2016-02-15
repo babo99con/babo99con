@@ -1,0 +1,59 @@
+from note import Note
+import pandas as pd
+
+class Notebook:
+    ''' Note 객체를 생성, 저장, 검색, 수정하는 클래스'''
+    def __init__(self):
+        '''
+        빈 Notebook 객체를 초기화 한다.
+        Notebook 객체의 유일한 속성인 notes는 Note 객체를 저장하는 list객체이다.
+        '''
+        self.notes = []
+        
+    def add_note(self, title, content, tags=''):
+        '''새로운 Note 객체를 생성해서 추가한다.'''
+        self.notes.append( Note(title, content, tags) )
+    
+    def modify_title(self, note_id, title):
+        ''' 기존 Note 객체의 제목을 변경한다. '''
+        for note in self.notes:
+            if note.id == note_id:
+                note.title = title
+                break
+    
+    def modify_content(self, note_id, content):
+        ''' 기존 Note 객체의 내용을 변경한다. '''
+        for note in self.notes:
+            if note.id == note_id:
+                note.content = content
+                break
+               
+    def modify_tags(self, note_id, tags):
+        ''' 기존 Note 객체의 태그를 변경한다. '''
+        for note in self.notes:
+            if note.id == note_id:
+                note.tags = tags
+                break
+                
+    def search(self , search_string):
+        ''' 검색 문자열이 들어있는 Note 객체를 검색하여 반환한다.'''
+        return [note for note in self.notes if note.match(search_string)]
+        
+    def delete_note(self, note_id):
+        ''' 기존 Note 객체를 삭제한다. '''
+        for note in self.notes:
+            if note.id == note_id:
+                self.notes.remove(note)
+                break
+                
+    def to_csv(self, file_name):
+        '''자료를 csv 파일로 저장한다.'''
+        csv_name = open(file_name,'a+')
+        
+        notes_frame = pd.DataFrame(self.notes)
+
+        notes_frame.to_csv(csv_name)
+
+    def from_csv(self, file_name):
+        ''' 자료를 csv 파일로부터 읽어온다.'''
+        return pd.read_csv(file_name)
